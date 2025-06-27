@@ -13,11 +13,15 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+// я бы это вынес в отдельный файл
 abstract class BaseOrderProcessor {
     public void beforeProcess() {}
     public void afterProcess() {}
 }
 
+// очень забавное использование Closeable -- туда же Override
+
+// Class очень большой
 public class OrderProcessor extends BaseOrderProcessor implements Closeable {
 
     public static final OrderProcessor INSTANCE = new OrderProcessor();
@@ -30,6 +34,7 @@ public class OrderProcessor extends BaseOrderProcessor implements Closeable {
     private double lastGrandTotal;
     private int operationsCounter;
 
+    // Ещё один функционал, который излишен для этого класса
     private final Map<String, Double> loyaltyCache = new HashMap<>();
 
     private String tempReport;
@@ -73,6 +78,7 @@ public class OrderProcessor extends BaseOrderProcessor implements Closeable {
             }
         }
 
+        // Считаем что-то с деньгами в даблах
         double shippingCost = calculateShipping(shippingMethod, shippingSpeed);
         double tax = total * taxRate;
         double grandTotal = total + shippingCost + tax;
@@ -97,6 +103,7 @@ public class OrderProcessor extends BaseOrderProcessor implements Closeable {
         }
 
         tempReport = generateReport(customerName, orders, grandTotal);
+        // сомнительно, зачем fine
         logger.fine(tempReport);
 
         lastCustomerName = customerName;
@@ -105,6 +112,7 @@ public class OrderProcessor extends BaseOrderProcessor implements Closeable {
         afterProcess();
     }
 
+    // Непонятный switch с непонятными значениями и магическими числами
     private double calculateShipping(int method, int speed) {
         switch (method) {
             case 1 -> {
@@ -119,6 +127,7 @@ public class OrderProcessor extends BaseOrderProcessor implements Closeable {
         }
     }
 
+    // Вынести бы в отдельную сущность и класс для генерации репорта
     @Deprecated
     public String generateReport(String customerName, List<Order> orders, double grandTotal) {
         StringBuilder sb = new StringBuilder();
@@ -133,13 +142,16 @@ public class OrderProcessor extends BaseOrderProcessor implements Closeable {
         return sb.toString();
     }
 
+    // не юзается
     public String getCustomerPhone(Order o) {
         return o.getCustomer().getPhone();
     }
+    // не юзается
     public String getCustomerEmail(Order o) {
         return o.getCustomer().getEmail();
     }
 
+    // слишком много функционала
     private void sendEmail(String name, String a1, String a2, String pc, String city, String country, double total) {
         try {
             if (total < 0) throw new IOException("Negative total!");
@@ -148,10 +160,12 @@ public class OrderProcessor extends BaseOrderProcessor implements Closeable {
         }
     }
 
+    // слишком много функционала
     private void sendSMS(String name, String country, double total) {
         logger.info("[SMS] Hello, " + name + " from " + country + ": " + total);
     }
 
+    // слишком много функционала
     private void sendPush(String name, double total) {
         logger.info("[PUSH] Hi " + name + ": " + total);
     }
@@ -160,6 +174,7 @@ public class OrderProcessor extends BaseOrderProcessor implements Closeable {
         logger.log(Level.INFO, customer + " spent " + total);
     }
 
+    // не юзается
     public double calculateTotalAmounts(List<Order> orders) {
         double sum = 0;
         for (Order o : orders) {
@@ -168,6 +183,7 @@ public class OrderProcessor extends BaseOrderProcessor implements Closeable {
         return sum;
     }
 
+    // не юзается + ВРЗВРАЩАЕТ 42?)))
     private double oldCalculate(List<Order> orders) {
         return 42;
     }
@@ -176,6 +192,7 @@ public class OrderProcessor extends BaseOrderProcessor implements Closeable {
     public void close() {
     }
 
+    // надо вынести
     public static class Order {
         private final String id;
         private final double amount;
@@ -191,6 +208,7 @@ public class OrderProcessor extends BaseOrderProcessor implements Closeable {
         public Customer getCustomer() { return customer; }
     }
 
+    // надо вынести
     public static class Customer {
         private final String name;
         private final String phone;
@@ -205,6 +223,7 @@ public class OrderProcessor extends BaseOrderProcessor implements Closeable {
         public Address getAddress() { return address; }
     }
 
+    // надо вынести
     public static class Address {
         private final String line1;
         private final String line2;
