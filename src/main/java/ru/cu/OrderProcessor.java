@@ -4,10 +4,10 @@ package ru.cu;
  * Smell Safari Exercise
  */
 
- 
+
 import java.io.Closeable;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.ArrayList; // не используется
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,13 +27,13 @@ public class OrderProcessor extends BaseOrderProcessor implements Closeable {
 
     private double taxRate = 0.2;
 
-    private String lastCustomerName;
-    private double lastGrandTotal;
+    private String lastCustomerName; // не используется
+    private double lastGrandTotal; // не используется
     private int operationsCounter;
 
-    private final Map<String, Double> loyaltyCache = new HashMap<>();
+    private final Map<String, Double> loyaltyCache = new HashMap<>(); // не используется
 
-    private String tempReport;
+    private String tempReport; // временная переменная должна быть внутри нужного метода
 
     public void processOrders(List<Order> orders,
                               String customerName,
@@ -49,12 +49,13 @@ public class OrderProcessor extends BaseOrderProcessor implements Closeable {
                               int shippingSpeed,
                               boolean sendEmailFlag,
                               boolean sendSmsFlag,
-                              boolean sendPushFlag) {
+                              boolean sendPushFlag) { // слишком много параметров, надо разбивать на классы
+                                // да и метод чет слишком длинный, его тоже можно разбить на несколько
 
         beforeProcess();
 
         operationsCounter++;
-        logger.info("--- Start processing batch #" + operationsCounter + " ---");
+        logger.info("--- Start processing batch #" + operationsCounter + " ---"); 
 
         double total = 0;
         for (Order o : orders) {
@@ -74,17 +75,17 @@ public class OrderProcessor extends BaseOrderProcessor implements Closeable {
             }
         }
 
-        double shippingCost = calculateShipping(shippingMethod, shippingSpeed);
-        double tax = total * taxRate;
-        double grandTotal = total + shippingCost + tax;
+        double shippingCost = calculateShipping(shippingMethod, shippingSpeed); // primitive obsession
+        double tax = total * taxRate; // primitive obsession
+        double grandTotal = total + shippingCost + tax; // primitive obsession
 
-        if (sendEmailFlag) {
+        if (sendEmailFlag) { // флаги это плохо
             sendEmail(customerName, addressLine1, addressLine2, postalCode, city, country, grandTotal);
         }
-        if (sendSmsFlag) {
+        if (sendSmsFlag) { // флаги это плохо
             sendSMS(customerName, country, grandTotal);
         }
-        if (sendPushFlag) {
+        if (sendPushFlag) { // флаги это плохо
             sendPush(customerName, grandTotal);
         }
 
@@ -97,7 +98,7 @@ public class OrderProcessor extends BaseOrderProcessor implements Closeable {
             logger.info("Non-Finland loyalty points added: " + loyalty);
         }
 
-        tempReport = generateReport(customerName, orders, grandTotal);
+        tempReport = generateReport(customerName, orders, grandTotal); // используется deprecated метод
         logger.fine(tempReport);
 
         lastCustomerName = customerName;
@@ -132,21 +133,21 @@ public class OrderProcessor extends BaseOrderProcessor implements Closeable {
         sb.append("TOTAL: ").append(grandTotal).append("\n");
         logger.info("Report generated for " + customerName);
         return sb.toString();
-    }
+    } // dead code 
 
     public String getCustomerPhone(Order o) {
         return o.getCustomer().getPhone();
     }
     public String getCustomerEmail(Order o) {
         return o.getCustomer().getEmail();
-    }
+    } // ???
 
-    private void sendEmail(String name, String a1, String a2, String pc, String city, String country, double total) {
+    private void sendEmail(String name, String a1, String a2, String pc, String city, String country, double total) { // плохие названия
         try {
             if (total < 0) throw new IOException("Negative total!");
             logger.info("[EMAIL] " + name + " spent " + total);
         } catch (Exception ignored) {
-        }
+        } // пустой catch блок
     }
 
     private void sendSMS(String name, String country, double total) {
@@ -169,13 +170,13 @@ public class OrderProcessor extends BaseOrderProcessor implements Closeable {
         return sum;
     }
 
-    private double oldCalculate(List<Order> orders) {
-        return 42;
+    private double oldCalculate(List<Order> orders) { // never used
+        return 42; // magic number
     }
 
     @Override
-    public void close() {
-    }
+    public void close() { 
+    } // пустой deprecated метод
 
     public static class Order {
         private final String id;
