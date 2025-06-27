@@ -18,6 +18,11 @@ abstract class BaseOrderProcessor {
     public void afterProcess() {}
 }
 
+
+// large class
+// Speculative Generality
+
+// data clumps: line1, line2, city, country
 public class OrderProcessor extends BaseOrderProcessor implements Closeable {
 
     public static final OrderProcessor INSTANCE = new OrderProcessor();
@@ -34,6 +39,8 @@ public class OrderProcessor extends BaseOrderProcessor implements Closeable {
 
     private String tempReport;
 
+    // long method
+    // long parameter list
     public void processOrders(List<Order> orders,
                               String customerName,
                               String addressLine1,
@@ -62,11 +69,13 @@ public class OrderProcessor extends BaseOrderProcessor implements Closeable {
             if (isVip) {
                 amount = amount * 0.9;
             }
+            // primitive obsession
             if (discountPercent > 0) {
                 amount = amount - amount * discountPercent / 100.0;
             }
             total += amount;
 
+            // message chains
             String province = o.getCustomer().getAddress().getProvince();
             if (province != null && province.length() > 10) {
                 logger.fine("Long province name: " + province);
@@ -89,6 +98,7 @@ public class OrderProcessor extends BaseOrderProcessor implements Closeable {
 
         logTransaction(customerName, grandTotal);
 
+        // primitive obsession
         double loyalty = grandTotal * 0.05;
         if ("Finland".equalsIgnoreCase(country)) {
             logger.info("Finland loyalty points added: " + loyalty);
@@ -105,7 +115,10 @@ public class OrderProcessor extends BaseOrderProcessor implements Closeable {
         afterProcess();
     }
 
+    // primitive obsession
     private double calculateShipping(int method, int speed) {
+        // switch statements
+        // divergent change
         switch (method) {
             case 1 -> {
                 return speed == 1 ? 5 : speed == 2 ? 10 : 20;
@@ -133,6 +146,7 @@ public class OrderProcessor extends BaseOrderProcessor implements Closeable {
         return sb.toString();
     }
 
+    // message chains
     public String getCustomerPhone(Order o) {
         return o.getCustomer().getPhone();
     }
@@ -140,6 +154,7 @@ public class OrderProcessor extends BaseOrderProcessor implements Closeable {
         return o.getCustomer().getEmail();
     }
 
+    // long parameter list
     private void sendEmail(String name, String a1, String a2, String pc, String city, String country, double total) {
         try {
             if (total < 0) throw new IOException("Negative total!");
@@ -168,6 +183,7 @@ public class OrderProcessor extends BaseOrderProcessor implements Closeable {
         return sum;
     }
 
+    // primitive obsession
     private double oldCalculate(List<Order> orders) {
         return 42;
     }
@@ -205,6 +221,7 @@ public class OrderProcessor extends BaseOrderProcessor implements Closeable {
         public Address getAddress() { return address; }
     }
 
+    // Speculative Generality
     public static class Address {
         private final String line1;
         private final String line2;
@@ -212,6 +229,7 @@ public class OrderProcessor extends BaseOrderProcessor implements Closeable {
         private final String city;
         private final String province;
         private final String country;
+        // long parameter
         public Address(String line1, String line2, String postal, String city, String province, String country) {
             this.line1 = line1; this.line2 = line2; this.postal = postal; this.city = city; this.province = province; this.country = country;
         }
