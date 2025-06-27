@@ -163,6 +163,8 @@ public class OrderProcessor extends BaseOrderProcessor implements Closeable {
         }
     }
 
+
+    // duplicate code
     private void sendSMS(String name, String country, double total) {
         logger.info("[SMS] Hello, " + name + " from " + country + ": " + total);
     }
@@ -183,7 +185,7 @@ public class OrderProcessor extends BaseOrderProcessor implements Closeable {
         return sum;
     }
 
-    // primitive obsession
+    // dead code
     private double oldCalculate(List<Order> orders) {
         return 42;
     }
@@ -192,6 +194,7 @@ public class OrderProcessor extends BaseOrderProcessor implements Closeable {
     public void close() {
     }
 
+    // data class
     public static class Order {
         private final String id;
         private final double amount;
